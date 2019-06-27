@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huya.dc.datamanager.server.dao.StrategyPropertyDao">
+    <insert id="add">
+        INSERT INTO strategy_property(table_strategy_id, prop, val, create_user) VALUES
+        (#{tableStrategyId}, #{prop}, #{val}, #{createUser})
+    </insert>
+
+    <delete id="delByTableStrategyId">
+        delete from strategy_property where table_strategy_id = #{id};
+    </delete>
+
+    <select id="getByTableStrategyId" resultType="com.huya.dc.datamanager.server.model.TableStrategy" >
+        select id,
+          table_strategy_id tableStrategyId,
+          prop,
+          val,
+          create_time createTime,
+          update_time updateTime,
+          create_user createUser,
+          update_user updateUser from strategy_property where table_strategy_id = #{id};
+    </select>
+</mapper>
