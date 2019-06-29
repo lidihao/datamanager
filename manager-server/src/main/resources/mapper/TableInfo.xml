@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.huya.dc.datamanager.server.dao.TableInfoDao">
     <!--第一个参数是teamId,第二个参数是databaseId,第二个参数为pattern-->
-    <select id="getAllTableInfoByPattern" resultType="com.huya.dc.datamanager.server.model.vo.TableVo" >
+    <select id="getAllTableNameByPattern" resultType="com.huya.dc.datamanager.server.model.vo.TableVo" >
         SELECT tableinfo.id AS tableId, tableinfo.name AS tableName
         FROM  tableinfo
         WHERE tableinfo.tid=#{costTeamId} AND tableinfo.databaseId=#{databaseId} AND tableinfo.name like #{pattern}

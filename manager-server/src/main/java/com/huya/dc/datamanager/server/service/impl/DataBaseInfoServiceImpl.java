@@ -40,8 +40,8 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
     }
 
     @Override
-    public List<TableVo> getTableInfoByPattern(Long costTeamId, Long dataBaseId, String pattern) {
+    public List<TableVo> getTableNameByPattern(Long costTeamId, Long dataBaseId, String pattern) {
         String mysqlPattern = pattern+"%";
-        return tableInfoDao.getAllTableInfoByPattern(costTeamId,dataBaseId,mysqlPattern);
+        return tableInfoDao.getAllTableNameByPattern(costTeamId,dataBaseId,mysqlPattern);
     }
 }

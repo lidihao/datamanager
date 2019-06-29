@@ -1,11 +1,13 @@
 package com.huya.dc.datamanager.server.controller;
 
 
+import com.huya.dc.datamanager.server.exception.ControllerExceptionHandler;
 import com.huya.dc.datamanager.server.model.RestResult;
 import com.huya.dc.datamanager.server.model.vo.CostTeamVo;
 import com.huya.dc.datamanager.server.model.vo.DataBaseVo;
 import com.huya.dc.datamanager.server.model.vo.TableVo;
 import com.huya.dc.datamanager.server.service.DataBaseInfoService;
+import com.huya.dc.datamanager.server.utils.AssertUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,8 +48,9 @@ public class DataBaseInfoController {
      * @param costTeamId
      * @return
      */
-    @RequestMapping(value = "/databaseList",method = RequestMethod.GET)
-    public RestResult getAllDataBase(Long costTeamId){
+    @RequestMapping(value = "/databases",method = RequestMethod.GET)
+    public RestResult getAllDataBaseByCostTeamId(Long costTeamId){
+        AssertUtils.notNull(costTeamId,"成本组的id不能为空");
         List<DataBaseVo> dataBaseVoList = dataBaseInfoService.getAllDataBaseVoByCostTeamId(costTeamId);
         return RestResult.make(dataBaseVoList);
     }
@@ -60,9 +63,12 @@ public class DataBaseInfoController {
      * @param pattern
      * @return
      */
-    @RequestMapping(value = "/tableList",method = RequestMethod.GET)
-    public RestResult getAllTable(Long costTeamId,Long databaseId,String pattern){
-        List<TableVo> tableVoList = dataBaseInfoService.getTableInfoByPattern(costTeamId, databaseId, pattern);
+    @RequestMapping(value = "/tableNames",method = RequestMethod.GET)
+    public RestResult getAllTableName(Long costTeamId,Long databaseId,String pattern){
+        AssertUtils.notNull(costTeamId,"成本组的id不能为空");
+        AssertUtils.notNull(costTeamId,"数据库的id不能为空");
+        AssertUtils.notNull(costTeamId,"数据库表的前缀不能为空");
+        List<TableVo> tableVoList = dataBaseInfoService.getTableNameByPattern(costTeamId, databaseId, pattern);
         return RestResult.make(tableVoList);
     }
 }

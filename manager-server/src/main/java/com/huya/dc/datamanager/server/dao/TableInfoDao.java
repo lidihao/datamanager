@@ -10,5 +10,5 @@ import java.util.List;
 @Mapper
 @Repository
 public interface TableInfoDao {
-    List<TableVo> getAllTableInfoByPattern(Long costTeamId,Long databaseId,String pattern);
+    List<TableVo> getAllTableNameByPattern(Long costTeamId,Long databaseId,String pattern);
 }

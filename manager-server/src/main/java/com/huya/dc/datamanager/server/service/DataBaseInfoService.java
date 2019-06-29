@@ -11,5 +11,5 @@ public interface DataBaseInfoService {
    List<CostTeamVo> getAllCostTeam();
    String getCostTeamManagerByCostTeamName(String costTeamName);
    List<DataBaseVo> getAllDataBaseVoByCostTeamId(Long costTeamId);
-   List<TableVo> getTableInfoByPattern(Long costTeamId,Long dataBaseId,String pattern);
+   List<TableVo> getTableNameByPattern(Long costTeamId,Long dataBaseId,String pattern);
 }

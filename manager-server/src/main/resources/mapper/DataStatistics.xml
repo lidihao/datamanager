@@ -3,38 +3,37 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.huya.dc.datamanager.server.dao.DataStatisticsDao">
-    <!--private String dbName;
-    private String tableName;
-    private Integer accessCountPerDay;
-    private Long totalSize;
-    private Long coldDataSize;
-    private Long warmDataSize;
-    private Long heatData;
-    private Long migrationDataSize;-->
-    <select id="getTableStatisticsInfo" resultType="com.huya.dc.datamanager.server.model.DataBaseStatisticsInfo" >
-        SELECT databaseName,tableName,accessCountPerDay,totalSize,coldDataSize,warmDataSize,heatDataSize,migrationDataSize FROM datastatistics WHERE databaseName=#{databaseName} AND tableName = #{tableName} AND date_format(createDate,'%Y-%m-%d')=#{date}
+
+    <select id="getTableStatisticsInfo" resultType="com.huya.dc.datamanager.server.model.TableStatisticsInfo" >
+        SELECT databaseName,tableName,accessCountPerDay,totalSize,coldDataRatio,warmDataRatio,heatDataRatio,migrationDataRatio FROM databaseratio WHERE databaseName=#{databaseName} AND tableName = #{tableName} AND date_format(createDate,'%Y-%m-%d')=#{date}
     </select>
 
-    <select id="getDataBaseStatisticsInfo" resultType="com.huya.dc.datamanager.server.model.DataBaseStatisticsInfo" >
-        SELECT databaseName,sum(coldDataSize) as coldDataSize ,sum(warmDataSize) as warmDataSize,sum(heatDataSize) as heatDataSize,sum(migrationDataSize ) as migrationDataSize,sum(totalSize) AS totalSize FROM datastatistics WHERE databaseName=#{databaseName} AND date_format(createDate,'%Y-%m-%d')=#{date}
+    <select id="getDataBaseStatisticsInfo" resultType="com.huya.dc.datamanager.server.model.DatabaseStatisticsInfo" >
+    SELECT databaseName,coldDataSize/totalSize AS coldDataRatio,warmDataSize/totalSize AS warmDataRatio,heatDataSize/totalSize AS heatDataRatio,migrationDataSize/totalSize AS migrationDataRatio,totalSize
+    FROM (
+        SELECT databaseName,sum(coldDataRatio*totalSize) as coldDataSize ,sum(warmDataRatio*totalSize) as warmDataSize,
+        sum(heatDataRatio*totalSize) as heatDataSize,sum(migrationDataRatio*totalSize ) as migrationDataSize,sum(totalSize) AS totalSize FROM databaseratio
+        WHERE databaseName=#{databaseName} AND date_format(createDate,'%Y-%m-%d')=#{date}
+      )AS tmp
     </select>
     <select id="getNearDate" resultType="java.lang.String">
         SELECT dateTime FROM (
-                         SELECT DISTINCT date_format(createDate,'%Y-%m-%d') as dateTime FROM datastatistics
+                         SELECT DISTINCT date_format(createDate,'%Y-%m-%d') as dateTime FROM databaseratio
                      ) AS tmp ORDER BY dateTime desc limit 1
     </select>
 
-    <select id="getDataRatioByDataBaseName" resultType="com.huya.dc.datamanager.server.model.vo.DataListVo">
-        SELECT databaseName,tableName,accessCountperDay,totalSize,coldDataSize/totalSize AS coldDataRatio,warmDataSize/totalSize AS warmDataSizeRatio FROM datastatistics WHERE databaseName=#{databaseName} AND date_format(createDate,'%Y-%m-%d')=#{date}
+    <select id="getDataRatioByDataBaseName" resultType="com.huya.dc.datamanager.server.model.TableStatisticsInfo">
+        SELECT databaseName,tableName,accessCountperDay,totalSize,coldDataRatio,warmDataRatio,heatDataRatio,migrationDataRatio FROM databaseratio WHERE databaseName=#{databaseName} AND date_format(createDate,'%Y-%m-%d')=#{date}
         <if test="sortMap!=null">
             order by
             <foreach item="value" index="key" collection="sortMap.entrySet()" separator=",">
                 ${key} ${value}
             </foreach>
+
         </if>
     </select>
-    <select id="getDataRatioByTableNamePattern" resultType="com.huya.dc.datamanager.server.model.vo.DataListVo">
-        SELECT databaseName,tableName,accessCountperDay,totalSize,coldDataSize/totalSize AS coldDataRatio,warmDataSize/totalSize AS warmDataSizeRatio FROM datastatistics WHERE databaseName=#{databaseName} AND date_format(createDate,'%Y-%m-%d')=#{date} like #{tableNamePattern}
+    <select id="getDataRatioByTableNamePattern" resultType="com.huya.dc.datamanager.server.model.TableStatisticsInfo">
+        SELECT databaseName,tableName,accessCountperDay,totalSize,coldDataRatio,warmDataRatio,heatDataRatio,migrationDataRatio FROM databaseratio WHERE databaseName=#{databaseName} AND date_format(createDate,'%Y-%m-%d')=#{date} AND tableName like #{tableNamePattern}
         <if test="sortMap!=null">
             order by
             <foreach item="value" index="key" collection="sortMap.entrySet()" separator=",">
